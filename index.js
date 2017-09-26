@@ -1,6 +1,6 @@
 module.exports = class Vote {
-  constructor(opts = {}) {
-    this.candidates = opts.candidates
+  constructor(candidates = []) {
+    this.candidates = candidates
   }
 
   compile() {
@@ -16,6 +16,7 @@ module.exports = class Vote {
     const byteCode = compiledCode
       .contracts[':Voting']
       .bytecode
+
     this.contractDefinition = {
       abis: JSON.parse(abiDefinition),
       bin: byteCode,
@@ -33,6 +34,7 @@ module.exports = class Vote {
           const provider = trpc.provider()
           const Web3 = require('web3')
           const web3 = new Web3(provider)
+
           web3
             .eth
             .getAccounts()
@@ -49,15 +51,16 @@ module.exports = class Vote {
 
   deployContract(gas) {
     const options = {
-      data: this.contractDefinition.bin || '',
-      from: this.account || '',
+      data: this.contractDefinition.bin,
+      from: this.account,
       gas: gas || 4700000,
     }
-
     const contract = new this.web3
       .eth
-      .Contract(this.contractDefinition.abis, options)
-
+      .Contract(
+        this.contractDefinition.abis,
+        options
+      )
     const encodedNames = this.candidates
       .map(str => encode(str))
 
@@ -84,6 +87,7 @@ module.exports = class Vote {
         options
       )
     const encodedName = encode(candidate)
+
     return contract
       .methods
       .voteForCandidate(encodedName)
@@ -91,18 +95,13 @@ module.exports = class Vote {
   }
 
   async getScores() {
-    // const options = {
-    //   from: this.account,
-    //   gas: gas || 4700000,
-    // }
     const contract = new this.web3
       .eth
       .Contract(
         this.contractDefinition.abis,
         this.contractAddress
       )
-        // options
-    // const encodedName = encode(candidate)
+
     const scores = {}
     for (let i = 0; i < this.candidates.length; i++) {
       const candidate = this.candidates[i]
@@ -110,6 +109,7 @@ module.exports = class Vote {
         .methods
         .totalVotesFor(encode(candidate))
         .call()
+
       scores[candidate] = score
     }
 
@@ -118,6 +118,8 @@ module.exports = class Vote {
 }
 
 function encode(str) {
-  const hex = new Buffer(str).toString('hex')
+  const hex = new Buffer(str)
+    .toString('hex')
+
   return `0x${hex}`
 }

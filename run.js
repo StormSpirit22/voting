@@ -7,7 +7,7 @@ async function run() {
     'Rama',
     'Cathy'
   ]
-  const voting = new Voting({candidates})
+  const voting = new Voting(candidates)
 
   voting.compile()
   await voting.launchBlockchain()
