@@ -1,0 +1,16 @@
+{
+  "name": "vote",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node run.js"
+  },
+  "author": "Shiwen Luo <shiwen.l.ating@gmail.com> (https://github.com/pplam)",
+  "license": "ISC",
+  "dependencies": {
+    "ethereumjs-testrpc": "^4.1.3",
+    "solc": "^0.4.17",
+    "web3": "^1.0.0-beta.21"
+  }
+}
