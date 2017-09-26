@@ -1,4 +1,4 @@
-module.exports = class Vote {
+module.exports = class Voting {
   constructor(candidates = []) {
     this.candidates = candidates
   }
